@@ -20,6 +20,7 @@
 		"eslint": "^5.13.0"
 	},
 	"dependencies": {
-		"discord.js": "discordjs/discord.js"
+		"discord.js": "discordjs/discord.js",
+		"dotenv": "^6.2.0"
 	}
 }
