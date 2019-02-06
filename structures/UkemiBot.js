@@ -1,6 +1,6 @@
 import { Client } from 'discord.js';
 import CommandStore from './CommandStore';
-import EventStore from './EventStore.js';
+import EventStore from './EventStore';
 import Enmap from 'enmap';
 import EnmapLevel from 'enmap-level';
 
