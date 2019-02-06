@@ -19,19 +19,19 @@ const errorDirnameRegex = new RegExp( `${__dirname}/`, 'g' ),
         messageSweepInterval: 300
     } );
 
-client.login( process.env.DISCORD );
+client.login( process.env.TOKEN );
 
 client
-    .on( 'disconnect', () => client.console.warn( 'Bot is disconnecting...' ) )
-    .on( 'reconnecting', () => client.console.log( 'Bot reconnecting...' ) )
-    .on( 'error', ( err ) => client.console.error( err ) )
-    .on( 'warn', ( info ) => client.console.warn( info ) );
+    .on( 'disconnect', () => console.log( 'Bot is disconnecting...' ) )
+    .on( 'reconnecting', () => console.log( 'Bot reconnecting...' ) )
+    .on( 'error', ( err ) => console.error( err ) )
+    .on( 'warn', ( info ) => console.warn( info ) );
 
 process.on( 'uncaughtException', ( err ) => {
     const errorMsg = err.stack.replace( errorDirnameRegex, './' );
 
-    client.console.error( `Uncaught Exception: ${errorMsg}` );
+    console.error( `Uncaught Exception: ${errorMsg}` );
     process.exit( 1 );
 } );
 
-process.on( 'unhandledRejection', client.console.error );
+process.on( 'unhandledRejection', console.error() );
