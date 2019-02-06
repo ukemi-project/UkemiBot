@@ -6,5 +6,20 @@
 	"repository": "https://github.com/KyteProject/UkemiBot",
 	"author": "Daniel smith",
 	"license": "MIT",
-	"private": false
+	"private": false,
+	"scripts": {
+		"test": "eslint .",
+		"lint": "eslint --fix .",
+		"start": "nodemon index.js"
+	},
+	"engines": {
+		"node": ">=8"
+	},
+	"devDependencies": {
+		"babel-eslint": "^10.0.1",
+		"eslint": "^5.13.0"
+	},
+	"dependencies": {
+		"discord.js": "discordjs/discord.js"
+	}
 }
