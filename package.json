@@ -1,0 +1,10 @@
+{
+	"name": "ukemibot",
+	"version": "1.0.0",
+	"description": "Custom Discord bot for use with company channels",
+	"main": "index.js",
+	"repository": "https://github.com/KyteProject/UkemiBot",
+	"author": "Daniel smith",
+	"license": "MIT",
+	"private": false
+}
