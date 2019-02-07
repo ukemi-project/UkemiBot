@@ -6,6 +6,6 @@ module.exports = class extends Event {
             return;
         }
         this.client.user.setActivity( `@${this.client.user.username} help` );
-        console.log( `New guild has been joined: ${guild.name} (${guild.id}) with ${guild.memberCount - 1} members` );
+        console.log( `New guild has been joined: ${guild.name}` );
     }
 };
