@@ -15,6 +15,6 @@ module.exports = class Google extends GoogleDrive {
             return message.reply( 'You need to supply a command to run!' );
         }
 
-        await this.token( args[ 0 ] );
+        await this.runDrive( args[ 0 ] );
     }
 };

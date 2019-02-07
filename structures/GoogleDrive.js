@@ -11,7 +11,7 @@ class GoogleDrive extends Command {
         this.TOKEN_PATH = 'token.json';
     }
 
-    token( method ) {
+    runDrive( method ) {
         // Load client secrets from a local file.
         fs.readFile( 'credentials.json', ( err, content ) => {
             if ( err ) {
