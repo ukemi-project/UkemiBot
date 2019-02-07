@@ -10,22 +10,29 @@
 	"scripts": {
 		"test": "eslint .",
 		"lint": "eslint --fix .",
-		"start": "nodemon index.js"
+		"start": "babel-node index.js",
+		"debug": "babel-node debug index.js"
 	},
 	"engines": {
 		"node": ">=8"
 	},
 	"devDependencies": {
+		"babel-cli": "^6.26.0",
+		"babel-core": "^6.26.3",
 		"babel-eslint": "^10.0.1",
+		"babel-preset-env": "^1.7.0",
 		"eslint": "^5.13.0",
-		"eslint-plugin-import": "^2.16.0"
+		"eslint-plugin-import": "^2.16.0",
+		"nodemon": "^1.18.9"
 	},
 	"dependencies": {
+		"babel-plugin-dynamic-import-node": "^2.2.0",
 		"discord.js": "discordjs/discord.js",
 		"dotenv": "^6.2.0",
 		"enmap": "^4.7.1",
 		"enmap-level": "^2.1.0",
 		"fs-nextra": "^0.3.8",
+		"klaw": "^3.0.0",
 		"moment": "^2.24.0",
 		"path": "^0.12.7"
 	}

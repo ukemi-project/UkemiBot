@@ -3,20 +3,20 @@ import CommandStore from './CommandStore';
 import EventStore from './EventStore';
 import Enmap from 'enmap';
 import EnmapLevel from 'enmap-level';
+import Config from './Config';
 
 class UkemiBot extends Client {
     constructor( options ) {
         super( options );
 
-        this.config = require( '../config.js' );
+        this.config = new Config();
 
         this.commands = new CommandStore( this );
         this.events = new EventStore( this );
 
         this.levelCache = {};
         this.methods = {
-            util: require( '../util/util.js' ),
-            errors: require( '../util/CustomError' )
+            util: require( '../util/util.js' )
         };
 
         // Enmap

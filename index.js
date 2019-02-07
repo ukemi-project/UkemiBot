@@ -33,5 +33,3 @@ process.on( 'uncaughtException', ( err ) => {
     console.error( `Uncaught Exception: ${errorMsg}` );
     process.exit( 1 );
 } );
-
-process.on( 'unhandledRejection', console.error() );

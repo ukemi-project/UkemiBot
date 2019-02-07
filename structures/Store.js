@@ -27,7 +27,7 @@ class Store extends Collection {
         return !exists ? false : super.delete( key );
     }
 
-    load( file ) {
+    async load( file ) {
         const filepath = path.join( this.dir, file );
 
         try {
@@ -40,7 +40,8 @@ class Store extends Collection {
             delete require.cache[ filepath ];
             return piece;
         } catch ( err ) {
-            console.error( `Failed to load ${this.name.slice( 0, -1 )} (${filepath}). Error:\n${error.stack || err}` );
+            console.error( `Failed to load ${this.name.slice( 0, -1 )} (${filepath}). Error:\n${err.stack || err}` );
+            return null;
         }
     }
 
