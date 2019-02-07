@@ -2,6 +2,7 @@ export default class Config {
     constructor() {
         this.admins = [];
         this.support = [];
+        this.resources = [ '543066349283442696', '543066467541975041' ];
 
         this.defaultSettings = {
             prefix: '.',
@@ -9,8 +10,7 @@ export default class Config {
             announceChannel: 'announcements',
             patronRole: 'Patrons',
             modRole: 'Moderator',
-            adminRole: 'Administrator',
-            systemNotice: 'true'
+            adminRole: 'Ukemi'
         };
 
         this.permLevels = [

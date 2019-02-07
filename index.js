@@ -1,4 +1,6 @@
 require( 'dotenv' ).config();
+require( './extenders/Message.js' );
+
 import UkemiBot from './structures/UkemiBot';
 
 const errorDirnameRegex = new RegExp( `${__dirname}/`, 'g' ),
