@@ -8,6 +8,7 @@ module.exports = Structures.extend(
                 super( ...args );
 
                 this.settings = this.client.getGuildSettings( this.guild );
+                this.flags = [];
             }
 
             get member() {

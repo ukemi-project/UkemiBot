@@ -14,7 +14,6 @@ export default class Command {
     }
 
     async run( message, args, level ) {
-        // eslint-disable-line no-unused-vars
         throw new Error( `Command ${this.constructor.name} doesn't provide a run method.` );
     }
 

@@ -1,5 +1,4 @@
 import Event from '../structures/Event.js';
-import { link } from 'fs';
 
 module.exports = class extends Event {
     constructor( ...args ) {
@@ -17,6 +16,39 @@ module.exports = class extends Event {
 
         if ( message.guild && !message.channel.id ) {
             return;
+        }
+
+        const prefix = new RegExp(
+            `^<@!?${this.client.user.id}> |^${this.client.methods.util.regExpEsc( message.settings.prefix )}`
+        ).exec( message.content );
+
+        if ( prefix ) {
+            const args = message.content
+                    .slice( prefix[ 0 ].length )
+                    .trim()
+                    .split( / +/g ),
+                cmd = this.client.commands.get( args.shift().toLowerCase() );
+
+            if ( cmd ) {
+                if ( cmd.guildOnly && !message.guild ) {
+                    return message.channel.send(
+                        'This command is unavailable via private message. Please run this command in a guild.'
+                    );
+                }
+
+                const level = this.client.permlevel( message );
+
+                message.author.permLevel = level;
+
+                if ( level < this.client.levelCache[ cmd.permLevel ] ) {
+                    return message.channel.send( 'Command level not met.' );
+                }
+
+                while ( args[ 0 ] && args[ 0 ][ 0 ] === '-' ) {
+                    message.flags.push( args.shift().slice( 1 ) );
+                }
+                await this.runCommand( message, cmd, args );
+            }
         }
 
         if ( message.settings.resources.includes( message.channel.id ) ) {
@@ -37,6 +69,22 @@ module.exports = class extends Event {
                         }, 20000 );
                     } );
             }
+        }
+    }
+
+    async runCommand( message, cmd, args ) {
+        try {
+            let msg;
+
+            const userPermLevel = this.client.config.permLevels.find( ( perm ) => perm.level === message.author.permLevel );
+
+            this.client.console.log(
+                `\u001b[43;30m[${userPermLevel.name}]\u001b[49;39m \u001b[44m${message.author.username} (${message
+                    .author.id})\u001b[49m ran command ${cmd.name}`
+            );
+            await cmd.run( message, args, message.author.permLevel, msg );
+        } catch ( err ) {
+            console.log( err );
         }
     }
 };
