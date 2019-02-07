@@ -27,7 +27,7 @@ class Store extends Collection {
         return !exists ? false : super.delete( key );
     }
 
-    async load( file ) {
+    load( file ) {
         const filepath = path.join( this.dir, file );
 
         try {
