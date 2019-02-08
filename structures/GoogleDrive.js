@@ -12,27 +12,27 @@ class GoogleDrive extends Command {
     }
 
     runDrive( method ) {
-        // Load client secrets from a local file.
+        const command = method || 'listFiles';
+
+        this.authorize( this[ command ] );
+    }
+
+    authorize( callback ) {
         fs.readFile( 'credentials.json', ( err, content ) => {
             if ( err ) {
                 return console.log( 'Error loading client secret file:', err );
             }
-            // Authorize a client with credentials, then call the Google Drive API.
-            this.authorize( JSON.parse( content ), this[ method ] );
-        } );
-    }
+            // eslint-disable-next-line camelcase
+            const { client_secret, client_id, redirect_uris } = JSON.parse( content ).installed,
+                oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] ); // eslint-disable-line camelcase
 
-    authorize( credentials, callback ) {
-        const { client_secret, client_id, redirect_uris } = credentials.installed,
-            oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] );
-
-        // Check if we have previously stored a token.
-        fs.readFile( this.TOKEN_PATH, ( err, token ) => {
-            if ( err ) {
-                return this.getAccessToken( oAuth2Client, callback );
-            }
-            oAuth2Client.setCredentials( JSON.parse( token ) );
-            callback( oAuth2Client );
+            fs.readFile( this.TOKEN_PATH, ( err, token ) => {
+                if ( err ) {
+                    return this.getAccessToken( oAuth2Client, callback );
+                }
+                oAuth2Client.setCredentials( JSON.parse( token ) );
+                callback( oAuth2Client );
+            } );
         } );
     }
 
@@ -44,15 +44,15 @@ class GoogleDrive extends Command {
        */
     getAccessToken( oAuth2Client, callback ) {
         const authUrl = oAuth2Client.generateAuthUrl( {
-            access_type: 'offline',
-            scope: this.SCOPES
-        } );
+                access_type: 'offline', // eslint-disable-line camelcase
+                scope: this.SCOPES
+            } ),
+            rl = readline.createInterface( {
+                input: process.stdin,
+                output: process.stdout
+            } );
 
         console.log( 'Authorize this app by visiting this url:', authUrl );
-        const rl = readline.createInterface( {
-            input: process.stdin,
-            output: process.stdout
-        } );
 
         rl.question( 'Enter the code from that page here: ', ( code ) => {
             rl.close();

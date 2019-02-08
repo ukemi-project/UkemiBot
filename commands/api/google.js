@@ -11,10 +11,6 @@ module.exports = class Google extends GoogleDrive {
     }
 
     async run( message, args, level ) {
-        if ( args.length === 0 ) {
-            return message.reply( 'You need to supply a command to run!' );
-        }
-
         await this.runDrive( args[ 0 ] );
     }
 };
