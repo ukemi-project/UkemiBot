@@ -102,12 +102,16 @@ class GoogleDrive {
         *   Upload to directory based on channel
         *   Work out a way to directly copy file instead of downloading and then uploading
         */
-        const drive = google.drive( { version: 'v3', auth } );
+
+        const drive = google.drive( { version: 'v3', auth } ),
+            rootFolder = '1JTapSPk1XNhxCKlJcOa53IW6QL6UjHa6',
+            subFolder = this.handleFolder( auth, message );
 
         message.attachments.each( async( file ) => {
             const fileStream = fs.createWriteStream( `${file.name}` ),
                 fileMetadata = {
-                    name: `${file.name}`
+                    name: `${file.name}`,
+                    parents: [ rootFolder, subFolder ]
                 };
             let media = {};
 
@@ -143,6 +147,39 @@ class GoogleDrive {
                 }
             );
         } );
+    }
+
+    handleFolder( auth, message ) {
+        const drive = google.drive( { version: 'v3', auth } );
+
+        drive.files.list(
+            {
+                q: `mimeType = 'application/vnd.google-apps.folder' and name = ${message.channel.parent.name}`,
+                fields: 'files(id, name)'
+            },
+            ( err, file ) => {
+                if ( err ) {
+                    drive.files.create(
+                        {
+                            resource: {
+                                name: message.channel.parent.name,
+                                mimeType: 'application/vnd.google-apps.folder'
+                            },
+                            fields: 'id'
+                        },
+                        ( error, folder ) => {
+                            if ( error ) {
+                                console.error( error );
+                            } else {
+                                return folder.id;
+                            }
+                        }
+                    );
+                } else {
+                    return file.id;
+                }
+            }
+        );
     }
 }
 
