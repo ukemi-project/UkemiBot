@@ -12,6 +12,6 @@ module.exports = class Google extends Command {
     }
 
     async run( message, args, level ) {
-        await GoogleDrive.runDrive( args[ 0 ] );
+        await GoogleDrive.runDrive( args[ 0 ], message );
     }
 };

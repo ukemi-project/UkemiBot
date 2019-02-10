@@ -1,4 +1,5 @@
 import Event from '../structures/Event.js';
+import GoogleDrive from '../structures/GoogleDrive';
 
 module.exports = class extends Event {
     constructor( ...args ) {
@@ -66,6 +67,8 @@ module.exports = class extends Event {
                             msg.delete();
                         }, 20000 );
                     } );
+            } else {
+                GoogleDrive.runDrive( 'uploadResource', message );
             }
         }
     }

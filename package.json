@@ -33,7 +33,10 @@
 		"enmap-level": "^2.1.0",
 		"fs-nextra": "^0.3.8",
 		"googleapis": "27",
+		"mime-types": "^2.1.21",
 		"moment": "^2.24.0",
-		"path": "^0.12.7"
+		"path": "^0.12.7",
+		"request": "^2.88.0",
+		"request-promise": "^4.2.2"
 	}
 }
