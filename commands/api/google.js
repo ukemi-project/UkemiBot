@@ -1,6 +1,7 @@
 import GoogleDrive from '../../structures/GoogleDrive';
+import Command from '../../structures/Command';
 
-module.exports = class Google extends GoogleDrive {
+module.exports = class Google extends Command {
     constructor( ...args ) {
         super( ...args, {
             name: 'google',
@@ -11,6 +12,6 @@ module.exports = class Google extends GoogleDrive {
     }
 
     async run( message, args, level ) {
-        await this.runDrive( args[ 0 ] );
+        await GoogleDrive.runDrive( args[ 0 ] );
     }
 };

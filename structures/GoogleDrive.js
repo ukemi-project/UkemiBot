@@ -1,11 +1,10 @@
 import { google } from 'googleapis';
-import Command from './Command';
 import fs from 'fs';
 import readline from 'readline';
 
-class GoogleDrive extends Command {
-    constructor( client, file, options = {} ) {
-        super( client, file, Object.assign( options, { guildOnly: true } ) );
+class GoogleDrive {
+    constructor() {
+        // super(client, file, Object.assign(options, { guildOnly: true }));
 
         this.SCOPES = [ 'https://www.googleapis.com/auth/drive.metadata.readonly' ];
         this.TOKEN_PATH = 'token.json';
@@ -104,4 +103,4 @@ class GoogleDrive extends Command {
     }
 }
 
-export default GoogleDrive;
+export default new GoogleDrive();

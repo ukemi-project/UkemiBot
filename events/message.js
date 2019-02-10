@@ -55,7 +55,7 @@ module.exports = class extends Event {
 
                 message.guild.channels
                     .get( message.settings.botLogChannel )
-                    .send( `Message from ${message.author.username} has been deleted in ${message.channel}` );
+                    .send( ` deleted ${message.author.username}'s message in ${message.channel}.` );
 
                 message
                     .reply(
