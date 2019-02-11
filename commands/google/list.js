@@ -4,14 +4,14 @@ import Command from '../../structures/Command';
 module.exports = class Google extends Command {
     constructor( ...args ) {
         super( ...args, {
-            name: 'google',
-            description: '...',
-            category: 'Api',
-            usage: 'google'
+            name: 'list',
+            description: 'list drive files',
+            category: 'Google',
+            usage: 'list'
         } );
     }
 
-    async run( message, args, level ) {
-        await GoogleDrive.runDrive( args[ 0 ], message );
+    async run( message ) {
+        GoogleDrive.listFiles( message );
     }
 };

@@ -1,98 +1,47 @@
 import { google } from 'googleapis';
 import fs from 'fs';
-import readline from 'readline';
 import request from 'request-promise';
+import googleClient from '../structures/GoogleClient';
 
-//  TODO: refactor out auth from action methods
 class GoogleDrive {
-    constructor() {
-        this.SCOPES = [ 'https://www.googleapis.com/auth/drive' ];
-        this.TOKEN_PATH = 'token.json';
-    }
+    constructor() {}
 
-    runDrive( method, message ) {
-        const command = method || 'listFiles';
-        // TODO: Check input method
-
-        this.authorize( this[ command ], message );
-    }
-
-    authorize( callback, message ) {
-        fs.readFile( 'credentials.json', ( err, content ) => {
-            if ( err ) {
-                return console.log( 'Error loading client secret file:', err );
-            }
-            // eslint-disable-next-line camelcase
-            const { client_secret, client_id, redirect_uris } = JSON.parse( content ).installed,
-                oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] ); // eslint-disable-line camelcase
-
-            fs.readFile( this.TOKEN_PATH, ( err, token ) => {
-                if ( err ) {
-                    return this.getAccessToken( oAuth2Client, callback, message );
-                }
-                oAuth2Client.setCredentials( JSON.parse( token ) );
-                callback( oAuth2Client, message );
-            } );
-        } );
-    }
-
-    getAccessToken( oAuth2Client, callback, message ) {
-        const authUrl = oAuth2Client.generateAuthUrl( {
-                access_type: 'offline', // eslint-disable-line camelcase
-                scope: this.SCOPES
-            } ),
-            rl = readline.createInterface( {
-                input: process.stdin,
-                output: process.stdout
+    listFiles( message ) {
+        const scopes = [ 'https://www.googleapis.com/auth/drive' ],
+            drive = google.drive( {
+                version: 'v3',
+                auth: googleClient.oAuth2Client
             } );
 
-        message.reply( `Authorize this app by visiting this url: ${authUrl}` );
+        googleClient
+            .authenticate( scopes, message )
+            .then( () => {
+                let output = '= File List =\n\n';
 
-        rl.question( 'Enter the code from that page here: ', ( code ) => {
-            rl.close();
-            oAuth2Client.getToken( code, ( err, token ) => {
-                if ( err ) {
-                    return console.error( 'Error retrieving access token', err );
-                }
-                oAuth2Client.setCredentials( token );
-                // Store the token to disk for later program executions
-                fs.writeFile( this.TOKEN_PATH, JSON.stringify( token ), ( err ) => {
-                    if ( err ) {
-                        console.error( err );
+                drive.files.list(
+                    {
+                        pageSize: 50,
+                        fields: 'nextPageToken, files(name)'
+                    },
+                    ( err, res ) => {
+                        if ( err ) {
+                            return console.log( `The API returned an error: ${err}` );
+                        }
+
+                        const files = res.data.files;
+
+                        if ( files.length ) {
+                            files.forEach( ( file ) => {
+                                output += `• ${file.name}\n`;
+                            } );
+                        } else {
+                            message.reply( 'No files found.' );
+                        }
+                        message.channel.send( output, { code: 'asciidoc', split: { char: '\u200b' } } );
                     }
-                    console.log( 'Token stored to', this.TOKEN_PATH );
-                } );
-                callback( oAuth2Client, message );
-            } );
-        } );
-    }
-
-    listFiles( auth, message ) {
-        const drive = google.drive( { version: 'v3', auth } );
-        let output = '= File List =\n\n';
-
-        drive.files.list(
-            {
-                pageSize: 50,
-                fields: 'nextPageToken, files(name)'
-            },
-            ( err, res ) => {
-                if ( err ) {
-                    return console.log( `The API returned an error: ${err}` );
-                }
-
-                const files = res.data.files;
-
-                if ( files.length ) {
-                    files.forEach( ( file ) => {
-                        output += `• ${file.name}\n`;
-                    } );
-                } else {
-                    message.reply( 'No files found.' );
-                }
-                message.channel.send( output, { code: 'asciidoc', split: { char: '\u200b' } } );
-            }
-        );
+                );
+            } )
+            .catch( console.error );
     }
 
     uploadResource( auth, message ) {
