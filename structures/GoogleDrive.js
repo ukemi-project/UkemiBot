@@ -48,9 +48,8 @@ class GoogleDrive {
     }
 
     uploadResource( message ) {
-        /* TODO: Remove local file
+        /* TODO:
         *   Handle embed, and all attachment types.
-        *   Local files to go into a folder.
         *   Work out a way to directly copy file instead of downloading and then uploading
         */
 
@@ -97,6 +96,12 @@ class GoogleDrive {
                             if ( err ) {
                                 console.error( err );
                             } else {
+                                fs.unlink( `${file.name}`, ( error ) => {
+                                    if ( error ) {
+                                        console.log( error );
+                                    }
+                                } );
+
                                 message.react( '544264131780411437' );
                                 message.guild.channels
                                     .get( message.settings.botLogChannel )
