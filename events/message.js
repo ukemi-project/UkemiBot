@@ -68,7 +68,7 @@ module.exports = class extends Event {
                         }, 20000 );
                     } );
             } else {
-                GoogleDrive.runDrive( 'uploadResource', message );
+                GoogleDrive.uploadResource( message );
             }
         }
     }
