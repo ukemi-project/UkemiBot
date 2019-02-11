@@ -51,7 +51,6 @@ class GoogleDrive {
         /* TODO: Remove local file
         *   Handle embed, and all attachment types.
         *   Local files to go into a folder.
-        *   Upload to directory based on channel
         *   Work out a way to directly copy file instead of downloading and then uploading
         */
 
@@ -61,13 +60,11 @@ class GoogleDrive {
                 auth: googleClient.oAuth2Client
             } );
 
-        // await this.handleFolder( message );
-
         googleClient
             .authenticate( scopes, message )
             .then( () => {
                 message.attachments.each( async( file ) => {
-                    this.handleFolder( message );
+                    await this.handleFolder( message );
 
                     const fileStream = fs.createWriteStream( `${file.name}` ),
                         fileMetadata = {
@@ -125,8 +122,8 @@ class GoogleDrive {
                 .then( () => {
                     drive.files.list(
                         {
-                            q: `mimeType = 'application/vnd.google-apps.folder' and name = ${message.channel.parent
-                                .name}`,
+                            q: `mimeType='application/vnd.google-apps.folder' and name='${message.channel.parent
+                                .name}'`,
                             fields: 'files(id, name)'
                         },
                         ( err, file ) => {
@@ -150,7 +147,7 @@ class GoogleDrive {
                                     }
                                 );
                             } else {
-                                this.subFolder = file.data.id;
+                                this.subFolder = file.data.files[ 0 ].id;
                                 resolve( this.subFolder );
                             }
                         }
