@@ -67,7 +67,7 @@ class GoogleDrive {
             .authenticate( scopes, message )
             .then( () => {
                 message.attachments.each( async( file ) => {
-                    await this.handleFolder( message );
+                    this.handleFolder( message );
 
                     const fileStream = fs.createWriteStream( `${file.name}` ),
                         fileMetadata = {
@@ -122,16 +122,16 @@ class GoogleDrive {
         return new Promise( ( resolve, reject ) => {
             googleClient
                 .authenticate( scopes, message )
-                .then( async() => {
-                    await drive.files.list(
+                .then( () => {
+                    drive.files.list(
                         {
                             q: `mimeType = 'application/vnd.google-apps.folder' and name = ${message.channel.parent
                                 .name}`,
                             fields: 'files(id, name)'
                         },
-                        async( err, file ) => {
+                        ( err, file ) => {
                             if ( err ) {
-                                await drive.files.create(
+                                drive.files.create(
                                     {
                                         resource: {
                                             name: message.channel.parent.name,
