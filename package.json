@@ -32,7 +32,7 @@
 		"enmap": "^4.7.1",
 		"enmap-level": "^2.1.0",
 		"fs-nextra": "^0.3.8",
-		"googleapis": "27",
+		"googleapis": "^37.2.0",
 		"moment": "^2.24.0",
 		"path": "^0.12.7",
 		"request": "^2.88.0",
