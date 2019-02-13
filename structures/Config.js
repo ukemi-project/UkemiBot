@@ -1,14 +1,11 @@
 export default class Config {
     constructor() {
-        this.admins = [];
-        this.support = [];
         this.owner = '113226391771717632';
 
         this.defaultSettings = {
             prefix: '.',
             botLogChannel: '543064645292785665',
             announceChannel: 'announcements',
-            patronRole: 'Patrons',
             modRole: 'Moderator',
             adminRole: 'Ukemi',
             resources: [ '543066349283442696', '543066467541975041' ]
@@ -22,23 +19,6 @@ export default class Config {
             },
             {
                 level: 1,
-                name: 'Patron',
-                check: ( message ) => {
-                    try {
-                        const patronRole = message.guild.roles.find(
-                            ( r ) => r.name.toLowerCase() === message.settings.patronRole.toLowerCase()
-                        );
-
-                        if ( patronRole && message.member.roles.has( patronRole.id ) ) {
-                            return true;
-                        }
-                    } catch ( e ) {
-                        return false;
-                    }
-                }
-            },
-            {
-                level: 2,
                 name: 'Moderator',
                 check: ( message ) => {
                     try {
@@ -55,7 +35,7 @@ export default class Config {
                 }
             },
             {
-                level: 3,
+                level: 2,
                 name: 'Administrator',
                 check: ( message ) => {
                     try {
@@ -70,23 +50,7 @@ export default class Config {
                 }
             },
             {
-                level: 4,
-                name: 'Server Owner',
-                check: ( message ) =>
-                    ( message.channel.type === 'text' ? message.guild.owner.user.id === message.author.id : false )
-            },
-            {
-                level: 8,
-                name: 'Bot Support',
-                check: ( message ) => config.support.includes( message.author.id )
-            },
-            {
-                level: 9,
-                name: 'Bot Admin',
-                check: ( message ) => config.admins.includes( message.author.id )
-            },
-            {
-                level: 10,
+                level: 3,
                 name: 'Bot Owner',
                 check: ( message ) => this.owner === message.author.id
             }
