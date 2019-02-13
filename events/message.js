@@ -50,27 +50,36 @@ module.exports = class extends Event {
             }
         }
 
-        if ( message.settings.resources.includes( message.channel.id ) ) {
-            if ( !message.attachments.size && !message.embeds.length ) {
-                message.delete();
-
-                message.guild.channels
-                    .get( message.settings.botLogChannel )
-                    .send( ` deleted ${message.author.username}'s message in ${message.channel}.` );
-
-                message
-                    .reply(
-                        '\n\n**__Resources only!__**\n\n Take a minute to think if what you\'re trying to send is actually a useful resource. If it\'s something that can be shared as a link, uploaded to the drive, or forwarded in an email then do so. Unless the image is a visual resource itself it is not helpful. Screenshot spam polutes the resources channels so please avoid it.\n\nFormat for posting a resource should be:\n\n**Description:** <something describing the resource>\n**Resource:** <URL/IMG/ATTACHMENT>'
-                    )
-                    .then( ( msg ) => {
-                        setTimeout( () => {
-                            msg.delete();
-                        }, 20000 );
-                    } );
-            } else {
-                GoogleDrive.uploadResource( message );
-            }
+        if ( !message.settings.resources.includes( message.channel.id ) ) {
+            return;
         }
+
+        if ( message.attachments.size ) {
+            return GoogleDrive.uploadResource( message );
+        }
+
+        let link,
+            urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
+
+        if ( ( link = urlRegex.exec( message.content ) !== null ) ) {
+            return GoogleDrive.update( link, message );
+        }
+
+        message.delete();
+
+        message.guild.channels
+            .get( message.settings.botLogChannel )
+            .send( ` deleted ${message.author.username}'s message in ${message.channel}.` );
+
+        message
+            .reply(
+                '\n\n**__Resources only!__**\n\n Take a minute to think if what you\'re trying to send is actually a useful resource. If it\'s something that can be shared as a link, uploaded to the drive, or forwarded in an email then do so. Unless the image is a visual resource itself it is not helpful. Screenshot spam polutes the resources channels so please avoid it.\n\nFormat for posting a resource should be:\n\n**Description:** <something describing the resource>\n**Resource:** <URL/IMG/ATTACHMENT>'
+            )
+            .then( ( msg ) => {
+                setTimeout( () => {
+                    msg.delete();
+                }, 15000 );
+            } );
     }
 
     async runCommand( message, cmd, args ) {
