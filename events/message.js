@@ -5,6 +5,8 @@ import GoogleSheets from '../structures/GoogleSheets';
 module.exports = class extends Event {
     constructor( ...args ) {
         super( ...args );
+
+        this.urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
     }
 
     async run( message ) {
@@ -21,9 +23,8 @@ module.exports = class extends Event {
         }
 
         const prefix = new RegExp(
-                `^<@!?${this.client.user.id}> |^${this.client.methods.util.regExpEsc( message.settings.prefix )}`
-            ).exec( message.content ),
-            urlRegex = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=\+\$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=\+\$,\w]+@)[A-Za-z0-9.-]+)((?:\/[\+~%\/.\w-_]*)?\??(?:[-\+=&;%@.\w_]*)#?(?:[\w]*))?)/;
+            `^<@!?${this.client.user.id}> |^${this.client.methods.util.regExpEsc( message.settings.prefix )}`
+        ).exec( message.content );
 
         if ( prefix ) {
             const args = message.content
@@ -60,9 +61,9 @@ module.exports = class extends Event {
             return GoogleDrive.uploadResource( message );
         }
 
-        if ( urlRegex.exec( message.content ) !== null ) {
-            const link = message.content.match( urlRegex ),
-                description = message.cleanContent.replace( urlRegex, '' );
+        if ( this.urlRegex.exec( message.content ) !== null ) {
+            const link = message.content.match( this.urlRegex ),
+                description = message.cleanContent.replace( this.urlRegex, '' );
 
             if ( link.length > 1 ) {
                 return message.reply( 'Please submit only one link at a time.' );

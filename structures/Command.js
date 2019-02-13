@@ -13,7 +13,7 @@ export default class Command {
         this.store = this.client.commands;
     }
 
-    async run( message, args, level ) {
+    async run() {
         throw new Error( `Command ${this.constructor.name} doesn't provide a run method.` );
     }
 
