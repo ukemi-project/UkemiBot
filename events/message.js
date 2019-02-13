@@ -91,15 +91,7 @@ module.exports = class extends Event {
 
     async runCommand( message, cmd, args ) {
         try {
-            let msg;
-
-            // const userPermLevel = this.client.config.permLevels.find( ( perm ) => perm.level === message.author.permLevel );
-
-            // console.log(
-            //     `\u001b[43;30m[${userPermLevel.name}]\u001b[49;39m \u001b[44m${message.author.username} (${message
-            //         .author.id})\u001b[49m ran command ${cmd.name}`
-            // );
-            await cmd.run( message, args, message.author.permLevel, msg );
+            await cmd.run( message, args );
         } catch ( err ) {
             console.log( err );
         }

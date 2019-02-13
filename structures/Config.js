@@ -5,7 +5,6 @@ export default class Config {
         this.defaultSettings = {
             prefix: '.',
             botLogChannel: '543064645292785665',
-            announceChannel: 'announcements',
             modRole: 'Moderator',
             adminRole: 'Ukemi',
             resources: [ '543066349283442696', '543066467541975041' ]

@@ -95,10 +95,10 @@ class GoogleDrive {
         } );
 
         message.react( '544264131780411437' );
-        message.guild.channels
+
+        return message.guild.channels
             .get( message.settings.botLogChannel )
             .send( ` uploaded ${file.name} from: ${message.channel.parent.name}**/**${message.channel}.` );
-        return;
     }
 
     async listFiles( message ) {
@@ -117,14 +117,14 @@ class GoogleDrive {
         }
 
         if ( !response.data.files.length ) {
-            message.reply( 'No files found.' );
+            return message.reply( 'No files found.' );
         }
 
         response.data.files.forEach( ( file ) => {
             output += `• ${file.name}\n`;
         } );
 
-        message.channel.send( output, { code: 'asciidoc', split: { char: '\u200b' } } );
+        return message.channel.send( output, { code: 'asciidoc', split: { char: '\u200b' } } );
     }
 }
 

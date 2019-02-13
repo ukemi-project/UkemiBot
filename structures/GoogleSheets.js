@@ -28,7 +28,8 @@ class GoogleSheets {
         }
 
         message.react( '544264131780411437' );
-        message.guild.channels
+
+        return message.guild.channels
             .get( message.settings.botLogChannel )
             .send( ` updated links list, from: ${message.channel.parent.name}**/**${message.channel}.` );
     }

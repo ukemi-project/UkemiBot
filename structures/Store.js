@@ -17,6 +17,7 @@ class Store extends Collection {
         if ( exists ) {
             this.delete( piece.name );
         }
+
         super.set( piece.name, piece );
         return piece;
     }

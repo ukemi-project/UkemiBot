@@ -73,6 +73,7 @@ class UkemiBot extends Client {
         for ( const key in def ) {
             returns[ key ] = overrides[ key ] || def[ key ];
         }
+
         return returns;
     }
 
@@ -88,6 +89,7 @@ class UkemiBot extends Client {
         Object.keys( defaults ).forEach( ( key ) => {
             returnObject[ key ] = guild[ key ] ? guild[ key ] : defaults[ key ];
         } );
+
         return returnObject;
     }
 
@@ -98,6 +100,7 @@ class UkemiBot extends Client {
         if ( typeof settings !== 'object' ) {
             settings = {};
         }
+
         for ( const key in newSettings ) {
             if ( defaults[ key ] !== newSettings[ key ] ) {
                 settings[ key ] = newSettings[ key ];
@@ -105,6 +108,7 @@ class UkemiBot extends Client {
                 delete settings[ key ];
             }
         }
+
         this.settings.set( id, settings );
     }
 
