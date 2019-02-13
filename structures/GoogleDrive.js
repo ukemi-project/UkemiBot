@@ -14,32 +14,6 @@ class GoogleDrive {
         } );
     }
 
-    async listFiles( message ) {
-        let output = '= File List =\n\n',
-            response;
-
-        await googleClient.authenticate( this.scopes, message );
-
-        try {
-            response = await this.drive.files.list( {
-                pageSize: 25,
-                fields: 'nextPageToken, files(name)'
-            } );
-        } catch ( err ) {
-            return console.log( `The API returned an error: ${err}` );
-        }
-
-        if ( !response.data.files.length ) {
-            message.reply( 'No files found.' );
-        }
-
-        response.data.files.forEach( ( file ) => {
-            output += `• ${file.name}\n`;
-        } );
-
-        message.channel.send( output, { code: 'asciidoc', split: { char: '\u200b' } } );
-    }
-
     async uploadResource( message ) {
         await googleClient.authenticate( this.scopes, message );
 
@@ -125,6 +99,32 @@ class GoogleDrive {
             .get( message.settings.botLogChannel )
             .send( ` uploaded ${file.name} from: ${message.channel.parent.name}**/**${message.channel}.` );
         return;
+    }
+
+    async listFiles( message ) {
+        let output = '= File List =\n\n',
+            response;
+
+        await googleClient.authenticate( this.scopes, message );
+
+        try {
+            response = await this.drive.files.list( {
+                pageSize: 25,
+                fields: 'nextPageToken, files(name)'
+            } );
+        } catch ( err ) {
+            return console.log( `The API returned an error: ${err}` );
+        }
+
+        if ( !response.data.files.length ) {
+            message.reply( 'No files found.' );
+        }
+
+        response.data.files.forEach( ( file ) => {
+            output += `• ${file.name}\n`;
+        } );
+
+        message.channel.send( output, { code: 'asciidoc', split: { char: '\u200b' } } );
     }
 }
 

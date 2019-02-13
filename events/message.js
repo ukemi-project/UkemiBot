@@ -61,9 +61,12 @@ module.exports = class extends Event {
         }
 
         if ( urlRegex.exec( message.content ) !== null ) {
-            // TODO: Check for single or multiple
             const link = message.content.match( urlRegex ),
                 description = message.cleanContent.replace( urlRegex, '' );
+
+            if ( link.length > 1 ) {
+                return message.reply( 'Please submit only one link at a time.' );
+            }
 
             return GoogleSheets.resourceUpdate( link, description, message );
         }
@@ -76,7 +79,7 @@ module.exports = class extends Event {
 
         message
             .reply(
-                '\n\n**__Resources only!__**\n\n Take a minute to think if what you\'re trying to send is actually a useful resource. If it\'s something that can be shared as a link, uploaded to the drive, or forwarded in an email then do so. Unless the image is a visual resource itself it is not helpful. Screenshot spam polutes the resources channels so please avoid it.\n\nFormat for posting a resource should be:\n\n**Description:** <something describing the resource>\n**Resource:** <URL/IMG/ATTACHMENT>'
+                '\n\n**__Resources only!__**\n\n Take a minute to think if what you\'re sending is actually a useful resource. If it\'s something that can be shared as a link, uploaded to the drive, or forwarded in an email then do so. Unless the image is a visual resource itself it is not helpful. Screenshot spam polutes the resources channels so please avoid it.\n\nFormat for posting a resource should be:\n\n**Description:** <something describing the resource>\n**Resource:** <URL/IMG/ATTACHMENT>'
             )
             .then( ( msg ) => {
                 setTimeout( () => {
