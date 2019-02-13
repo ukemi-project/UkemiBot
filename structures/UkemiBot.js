@@ -52,9 +52,6 @@ class UkemiBot extends Client {
         while ( permOrder.length ) {
             const currentLevel = permOrder.shift();
 
-            if ( !( message.guild && currentLevel.guildOnly ) ) {
-                break;
-            }
             if ( currentLevel.check( message ) ) {
                 permlvl = currentLevel.level;
                 break;

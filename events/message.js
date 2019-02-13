@@ -38,13 +38,13 @@ module.exports = class extends Event {
                     return message.channel.send( 'Please run this command in a guild.' );
                 }
 
-                // const level = this.client.permlevel( message );
+                const level = this.client.permlevel( message );
 
-                // message.author.permLevel = level;
+                message.author.permLevel = level;
 
-                // if ( level < this.client.levelCache[ cmd.permLevel ] ) {
-                //     return message.channel.send( 'Command level not met.' );
-                // }
+                if ( level < this.client.levelCache[ cmd.permLevel ] ) {
+                    return message.channel.send( 'Command level not met.' );
+                }
 
                 while ( args[ 0 ] && args[ 0 ][ 0 ] === '-' ) {
                     message.flags.push( args.shift().slice( 1 ) );

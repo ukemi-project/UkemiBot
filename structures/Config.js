@@ -2,6 +2,7 @@ export default class Config {
     constructor() {
         this.admins = [];
         this.support = [];
+        this.owner = '113226391771717632';
 
         this.defaultSettings = {
             prefix: '.',
@@ -87,7 +88,7 @@ export default class Config {
             {
                 level: 10,
                 name: 'Bot Owner',
-                check: ( message ) => message.client.appInfo.owner.id === message.author.id
+                check: ( message ) => this.owner === message.author.id
             }
         ];
     }

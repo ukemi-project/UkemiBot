@@ -7,7 +7,7 @@ export default class Command {
         this.usage = options.usage || 'No usage provided.';
         this.extended = options.extended || 'No information provided.';
         this.hidden = options.hidden || false;
-        this.guildOnly = options.guildOnly || false;
+        this.guildOnly = options.guildOnly || true;
         this.permLevel = options.permLevel || 'User';
         this.file = file;
         this.store = this.client.commands;
