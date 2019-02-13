@@ -1,4 +1,3 @@
 {
-  "presets": [["env", { "targets": { "node": "current" } }]],
-  "plugins": ["dynamic-import-node"]
+  "presets": [["env", { "targets": { "node": "current" } }]]
 }
