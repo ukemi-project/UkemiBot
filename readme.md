@@ -1,6 +1,6 @@
 # UkemiBot
 
-Ukemi is a Discord bot used to manage resources and interact with the companies G-Sute apps. It's purpose to build an inteface between the two and automate actions, and to provide some QoL.
+giUkemiBot is a Discord chatbot using node.js and the discord.js library. The bot is to help with organising company resources on Discord and interact with G-Sute apps. It's purpose to build an inteface between the two and automate actions, and to provide some QoL.
 
 ### Tech
 
