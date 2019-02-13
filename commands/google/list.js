@@ -7,7 +7,7 @@ module.exports = class Google extends Command {
             name: 'list',
             description: 'list drive files',
             category: 'Google',
-            usage: 'list'
+            permLevel: 'Moderator'
         } );
     }
 
