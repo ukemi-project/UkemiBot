@@ -40,19 +40,20 @@ class GoogleClient {
                 scope: scopes
             } ),
             filter = ( m ) => m.author.id === message.author.id,
-            response = await message.awaitReply( `Authorize this app by visiting this url: ${authUrl}`, filter, 60000 ),
-            token = await oAuth2Client.getToken( response );
+            code = await message.awaitReply( `Authorize this app by visiting this url: ${authUrl}`, filter, 60000 );
 
-        await oAuth2Client.setCredentials( token );
+        await oAuth2Client.getToken( code, async( err, token ) => {
+            if ( err ) {
+                return console.error( 'Error retrieving access token', err );
+            }
 
-        try {
+            await oAuth2Client.setCredentials( token );
+
             await fs.writeFileSync( this.TOKEN_PATH, JSON.stringify( token ) );
-        } catch ( err ) {
-            return console.error( 'Error retrieving access token', err );
-        }
 
-        console.log( 'Token stored to', this.TOKEN_PATH );
-        return oAuth2Client;
+            message.reply( `Token stored to:' ${this.TOKEN_PATH} - Please run the command again.` );
+            return oAuth2Client;
+        } );
     }
 }
 

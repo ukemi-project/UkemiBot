@@ -5,25 +5,23 @@ import googleClient from '../structures/GoogleClient';
 
 class GoogleDrive {
     constructor() {
+        this.scopes = [ 'https://www.googleapis.com/auth/drive' ];
         this.rootFolder = '1JTapSPk1XNhxCKlJcOa53IW6QL6UjHa6';
         this.subFolder = {};
-        this.response = {};
+        this.drive = google.drive( {
+            version: 'v3',
+            auth: googleClient.oAuth2Client
+        } );
     }
 
     async listFiles( message ) {
-        const scopes = [ 'https://www.googleapis.com/auth/drive' ],
-            drive = google.drive( {
-                version: 'v3',
-                auth: googleClient.oAuth2Client
-            } );
-
         let output = '= File List =\n\n',
-            files;
+            response;
 
-        await googleClient.authenticate( scopes, message );
+        await googleClient.authenticate( this.scopes, message );
 
         try {
-            this.response = await drive.files.list( {
+            response = await this.drive.files.list( {
                 pageSize: 25,
                 fields: 'nextPageToken, files(name)'
             } );
@@ -31,13 +29,11 @@ class GoogleDrive {
             return console.log( `The API returned an error: ${err}` );
         }
 
-        files = this.response.data.files;
-
-        if ( !files.length ) {
+        if ( !response.data.files.length ) {
             message.reply( 'No files found.' );
         }
 
-        files.forEach( ( file ) => {
+        response.data.files.forEach( ( file ) => {
             output += `• ${file.name}\n`;
         } );
 
