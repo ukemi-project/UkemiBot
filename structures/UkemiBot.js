@@ -66,6 +66,7 @@ class UkemiBot extends Client {
         if ( !guild ) {
             return def;
         }
+
         const returns = {},
             overrides = this.settings.get( guild.id ) || {};
 
