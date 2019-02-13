@@ -1,6 +1,5 @@
 import { google } from 'googleapis';
 import fs from 'fs';
-import readline from 'readline';
 
 class GoogleClient {
     constructor( options ) {
@@ -8,57 +7,52 @@ class GoogleClient {
         this.TOKEN_PATH = 'token.json';
         this.KEY_PATH = 'credentials.json';
 
-        fs.readFile( this.KEY_PATH, ( err, content ) => {
-            if ( err ) {
-                return console.log( 'Error loading client secret file:', err );
-            }
-            // eslint-disable-next-line camelcase
-            const { client_secret, client_id, redirect_uris } = JSON.parse( content ).installed;
+        let content;
 
-            this.oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] ); // eslint-disable-line camelcase
-        } );
+        try {
+            content = fs.readFileSync( this.KEY_PATH, 'utf8' );
+        } catch ( err ) {
+            return console.log( 'Error loading client secret file:', err );
+        }
+
+        // eslint-disable-next-line
+		const { client_secret, client_id, redirect_uris } = JSON.parse(content).installed;
+
+        this.oAuth2Client = new google.auth.OAuth2( client_id, client_secret, redirect_uris[ 0 ] ); // eslint-disable-line camelcase
     }
 
-    authenticate( scopes, message ) {
-        return new Promise( ( resolve, reject ) => {
-            fs.readFile( this.TOKEN_PATH, ( error, token ) => {
-                if ( error ) {
-                    return this.getAccessToken( this.oAuth2Client, scopes, message );
-                }
-                this.oAuth2Client.setCredentials( JSON.parse( token ) );
-                resolve( this.oAuth2Client );
-            } );
-        } );
+    async authenticate( scopes, message ) {
+        let content;
+
+        try {
+            content = fs.readFileSync( this.TOKEN_PATH, 'utf8' );
+        } catch ( err ) {
+            return this.getAccessToken( this.oAuth2Client, scopes, message );
+        }
+
+        this.oAuth2Client.setCredentials( JSON.parse( content ) );
+        return this.oAuth2Client;
     }
 
-    getAccessToken( oAuth2Client, scopes, message ) {
+    async getAccessToken( oAuth2Client, scopes, message ) {
         const authUrl = oAuth2Client.generateAuthUrl( {
                 access_type: 'offline', // eslint-disable-line camelcase
                 scope: scopes
             } ),
-            rl = readline.createInterface( {
-                input: process.stdin,
-                output: process.stdout
-            } );
+            filter = ( m ) => m.author.id === message.author.id,
+            code = await message.awaitReply( `Authorize this app by visiting this url: ${authUrl}`, filter, 60000 );
 
-        message.reply( `Authorize this app by visiting this url: ${authUrl}` );
+        await oAuth2Client.getToken( code, async( err, token ) => {
+            if ( err ) {
+                return console.error( 'Error retrieving access token', err );
+            }
 
-        rl.question( 'Enter the code from that page here: ', ( code ) => {
-            rl.close();
-            oAuth2Client.getToken( code, ( err, token ) => {
-                if ( err ) {
-                    return console.error( 'Error retrieving access token', err );
-                }
-                oAuth2Client.setCredentials( token );
-                // Store the token to disk for later program executions
-                fs.writeFile( this.TOKEN_PATH, JSON.stringify( token ), ( error ) => {
-                    if ( error ) {
-                        console.error( error );
-                    }
-                    console.log( 'Token stored to', this.TOKEN_PATH );
-                } );
-                return oAuth2Client;
-            } );
+            await oAuth2Client.setCredentials( token );
+
+            await fs.writeFileSync( this.TOKEN_PATH, JSON.stringify( token ) );
+
+            message.reply( `Token stored to:' ${this.TOKEN_PATH} - Please run the command again.` );
+            return oAuth2Client;
         } );
     }
 }
