@@ -86,7 +86,8 @@ class GoogleDrive {
         const fileStream = fs.createWriteStream( `${file.name}` ),
             fileMetadata = {
                 name: `${file.name}`,
-                parents: [ this.subFolder ]
+                parents: [ this.subFolder ],
+                description: message.cleanContent
             };
         let media = {};
 
