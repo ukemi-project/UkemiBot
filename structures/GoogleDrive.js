@@ -7,7 +7,7 @@ class GoogleDrive {
     constructor() {
         this.scopes = [ 'https://www.googleapis.com/auth/drive' ];
         this.rootFolder = '1JTapSPk1XNhxCKlJcOa53IW6QL6UjHa6';
-        this.subFolder = {};
+        this.subFolder = '';
         this.drive = google.drive( {
             version: 'v3',
             auth: googleClient.oAuth2Client
@@ -41,23 +41,45 @@ class GoogleDrive {
     }
 
     async uploadResource( message ) {
-        /* TODO:
-        *   Handle embed, and all attachment types.
-        *   Work out a way to directly copy file instead of downloading and then uploading
-        */
+        await googleClient.authenticate( this.scopes, message );
 
-        const scopes = [ 'https://www.googleapis.com/auth/drive' ],
-            drive = google.drive( {
-                version: 'v3',
-                auth: googleClient.oAuth2Client
-            } );
-
-        await googleClient.authenticate( scopes, message );
         await this.handleFolder( message );
 
-        message.attachments.each( async( file ) => {
-            await this.fileUploader( file, message );
+        message.attachments.each( ( file ) => {
+            this.fileUploader( file, message );
         } );
+    }
+
+    async handleFolder( message ) {
+        let response;
+
+        try {
+            response = await this.drive.files.list( {
+                q: `mimeType='application/vnd.google-apps.folder' and name='${message.channel.parent.name}'`,
+                fields: 'files(id, name)'
+            } );
+        } catch ( err ) {
+            return console.log( err );
+        }
+
+        if ( response.data.files.length ) {
+            return ( this.subFolder = response.data.files[ 0 ].id );
+        }
+
+        try {
+            response = await this.drive.files.create( {
+                resource: {
+                    name: message.channel.parent.name,
+                    mimeType: 'application/vnd.google-apps.folder',
+                    parents: [ this.rootFolder ]
+                },
+                fields: 'id'
+            } );
+        } catch ( e ) {
+            return console.error( e );
+        }
+
+        return ( this.subFolder = response.data.id );
     }
 
     async fileUploader( file, message ) {
@@ -75,25 +97,23 @@ class GoogleDrive {
                 media.mimeType = response.headers[ 'content-type' ];
             } )
             .on( 'error', ( err ) => {
-                console.log( err );
+                return console.log( err );
             } );
 
         try {
-            await drive.files.create( {
-                requestBody: {},
-                resource: fileMetadata,
+            await this.drive.files.create( {
+                requestBody: fileMetadata,
                 media: {
                     body: fs.createReadStream( `${file.name}` )
-                },
-                fields: 'id'
+                }
             } );
         } catch ( err ) {
-            console.error( `Error uploading ${file.name}, ${err}` );
+            return console.error( `Error uploading ${file.name}, ${err}` );
         }
 
         fs.unlink( `${file.name}`, ( err ) => {
             if ( err ) {
-                console.log( `Error deleting ${file.name}, ${err}` );
+                return console.log( `Error deleting ${file.name}, ${err}` );
             }
         } );
 
@@ -101,54 +121,7 @@ class GoogleDrive {
         message.guild.channels
             .get( message.settings.botLogChannel )
             .send( ` uploaded ${file.name} from ${message.channel}.` );
-    }
-
-    handleFolder( message ) {
-        const scopes = [ 'https://www.googleapis.com/auth/drive' ],
-            drive = google.drive( {
-                version: 'v3',
-                auth: googleClient.oAuth2Client
-            } );
-
-        return new Promise( ( resolve, reject ) => {
-            googleClient
-                .authenticate( scopes, message )
-                .then( () => {
-                    drive.files.list(
-                        {
-                            q: `mimeType='application/vnd.google-apps.folder' and name='${message.channel.parent
-                                .name}'`,
-                            fields: 'files(id, name)'
-                        },
-                        ( err, file ) => {
-                            if ( err ) {
-                                drive.files.create(
-                                    {
-                                        resource: {
-                                            name: message.channel.parent.name,
-                                            mimeType: 'application/vnd.google-apps.folder',
-                                            parents: [ this.rootFolder ]
-                                        },
-                                        fields: 'id'
-                                    },
-                                    ( error, folder ) => {
-                                        if ( error ) {
-                                            reject( error );
-                                        } else {
-                                            this.subFolder = folder.data.id;
-                                            resolve( this.subFolder );
-                                        }
-                                    }
-                                );
-                            } else {
-                                this.subFolder = file.data.files[ 0 ].id;
-                                resolve( this.subFolder );
-                            }
-                        }
-                    );
-                } )
-                .catch( console.error );
-        } );
+        return;
     }
 }
 
