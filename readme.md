@@ -2,13 +2,7 @@
 
 UkemiBot is a Discord chatbot using node.js and the discord.js library. The bot is to help with organising company resources on Discord and interact with G-Sute apps. It's purpose to build an inteface between the two and automate actions, and to provide some QoL.
 
-### Tech
-
-UkemiBot uses a number of open source projects to work properly:
-
-* [node.js] - evented I/O for the backend
-* [discord.js] - discord.js is a powerful node.js module that allows you to interact with the Discord API very easily.
-* [googleapis] - Google API for interacting with google apps
+[git-repo-url] - UkemiBot repo.
 
 ### Installation
 
@@ -21,6 +15,15 @@ $ yarn install
 $ yarn babel-node index.js
 ```
 
+### Tech
+
+UkemiBot uses a number of open source projects to work properly:
+
+* [node.js] - Node.js run-time enviroment for backend.
+* [discord.js] - Discord.js for interacting with the Discord API.
+* [googleapis] - Google API for interacting with google apps.
+* [misaki] - Modeled structure and base.
+
 License
 ----
 MIT
@@ -29,3 +32,4 @@ MIT
    [node.js]: <http://nodejs.org>
    [discord.js]: <https://github.com/discordjs/discord.js>
    [googleapis]: <https://github.com/googleapis/googleapis>
+   [misaki]: <https://github.com/NotAWeebDev/Misaki>
