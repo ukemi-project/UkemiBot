@@ -23,7 +23,12 @@ class ActivityUpdate {
             return console.error( e );
         }
 
-        currentTrack = `\n${lastResponse.artist[ '#text' ]} - ${lastResponse.name}`;
+        currentTrack = `${lastResponse.artist[ '#text' ]} - ${lastResponse.name}`;
+
+        if ( !lastResponse[ '@attr' ] ) {
+            this.presence.activity.name = 'nothing';
+            return this.update( client );
+        }
 
         if ( !lastResponse[ '@attr' ].nowplaying ) {
             return;
@@ -34,12 +39,12 @@ class ActivityUpdate {
         }
 
         this.presence.activity.name = currentTrack;
-        this.update( client );
+        return this.update( client );
     }
 
     update( client ) {
         client.user.setPresence( this.presence );
-        console.log( `Activity changed to: ${this.presence.activity.name}` );
+        return console.log( `Activity changed to: ${this.presence.activity.name}` );
     }
 }
 
