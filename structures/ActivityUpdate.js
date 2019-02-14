@@ -20,13 +20,16 @@ class ActivityUpdate {
         try {
             lastResponse = JSON.parse( await request.get( this.url ) ).recenttracks.track[ 0 ];
         } catch ( e ) {
-            return console.error( e );
+            console.error( e );
+
+            this.presence = 'feedback';
+            return this.update( client );
         }
 
         currentTrack = `${lastResponse.artist[ '#text' ]} - ${lastResponse.name}`;
 
         if ( !lastResponse[ '@attr' ] ) {
-            this.presence.activity.name = 'nothing';
+            this.presence = 'feedback';
             return this.update( client );
         }
 
