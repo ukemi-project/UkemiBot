@@ -6,7 +6,7 @@ class ActivityUpdate {
             status: 'online',
             afk: 0,
             activity: {
-                name: 'feedback.',
+                name: 'feedback',
                 type: 'LISTENING'
             }
         };
@@ -15,37 +15,34 @@ class ActivityUpdate {
     }
 
     async fetch( client ) {
-        let lastResponse, currentTrack;
+        let lastResponse;
 
         try {
             lastResponse = JSON.parse( await request.get( this.url ) ).recenttracks.track[ 0 ];
         } catch ( e ) {
-            console.error( e );
-
-            this.presence = 'feedback';
-            return this.update( client );
+            return this.update( client, 'feedback' );
         }
 
-        currentTrack = `${lastResponse.artist[ '#text' ]} - ${lastResponse.name}`;
-
         if ( !lastResponse[ '@attr' ] ) {
-            this.presence = 'feedback';
-            return this.update( client );
+            return this.update( client, 'feedback' );
         }
 
         if ( !lastResponse[ '@attr' ].nowplaying ) {
             return;
         }
 
+        const currentTrack = `${lastResponse.artist[ '#text' ]} - ${lastResponse.name}`;
+
         if ( this.presence.activity.name === currentTrack ) {
             return;
         }
 
-        this.presence.activity.name = currentTrack;
-        return this.update( client );
+        return this.update( client, currentTrack );
     }
 
-    update( client ) {
+    update( client, track ) {
+        this.presence.activity.name = track;
+
         client.user.setPresence( this.presence );
         return console.log( `Activity changed to: ${this.presence.activity.name}` );
     }
