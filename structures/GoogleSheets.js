@@ -3,7 +3,11 @@ import googleClient from './GoogleClient';
 
 class GoogleSheets {
     constructor() {
-        this.scopes = [ 'https://www.googleapis.com/auth/spreadsheets' ];
+        this.scopes = [
+            'https://www.googleapis.com/auth/drive',
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/youtube'
+        ];
         this.sheetID = '1RafqUGGRNmhI4JClHH9qE_BpWe73TfegqHKUyxUQNwk';
         this.sheets = google.sheets( {
             version: 'v4',

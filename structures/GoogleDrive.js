@@ -5,7 +5,11 @@ import googleClient from '../structures/GoogleClient';
 
 class GoogleDrive {
     constructor() {
-        this.scopes = [ 'https://www.googleapis.com/auth/drive' ];
+        this.scopes = [
+            'https://www.googleapis.com/auth/drive',
+            'https://www.googleapis.com/auth/spreadsheets',
+            'https://www.googleapis.com/auth/youtube'
+        ];
         this.rootFolder = '1JTapSPk1XNhxCKlJcOa53IW6QL6UjHa6';
         this.subFolder = '';
         this.drive = google.drive( {
