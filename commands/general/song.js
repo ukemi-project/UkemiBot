@@ -12,6 +12,10 @@ module.exports = class Google extends Command {
     }
 
     async run( message ) {
+        if ( ActivityUpdate.presence.activity.name === 'feedback' ) {
+            return message.channel.send( 'Not currently listening to anything!' );
+        }
+
         const song = await Youtube.search( ActivityUpdate.presence.activity.name, message );
 
         message.channel.send(

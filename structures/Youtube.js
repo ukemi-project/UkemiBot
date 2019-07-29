@@ -6,7 +6,7 @@ class Youtube {
         this.scopes = [
             'https://www.googleapis.com/auth/drive',
             'https://www.googleapis.com/auth/spreadsheets',
-            'https://www.googleapis.com/auth/youtube'
+            'https://www.googleapis.com/auth/youtube.readonly'
         ];
         this.youtube = google.youtube( {
             version: 'v3',
