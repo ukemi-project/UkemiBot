@@ -30,7 +30,7 @@
 		"dotenv": "^6.2.0",
 		"enmap": "^4.7.1",
 		"fs-nextra": "^0.3.8",
-		"googleapis": "^37.2.0",
+		"googleapis": "^39.1.0",
 		"moment": "^2.24.0",
 		"path": "^0.12.7",
 		"request": "^2.88.0",
